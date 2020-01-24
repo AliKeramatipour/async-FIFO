@@ -29,19 +29,19 @@ module TB();
 
     always @(posedge rclk) begin
         if (bf_rdata != sf_rdata) begin
-            $display($time, "bf_rdata = %d, sf_rdata = %d, Tw = %d, Tr = %d, time = %t", bf_rdata, sf_rdata, Tw, Tr, $time);
-            $finish;
+            $display($time, "\nbf_rdata = %d, sf_rdata = %d, Tw = %d, Tr = %d, time = %t\n", bf_rdata, sf_rdata, Tw, Tr, $time);
+            $stop;
         end
         if (bf_rempty != sf_rempty) begin
             $display($time, "bf_rempty = %d, sf_rempty = %d, Tw = %d, Tr = %d, time = %t", bf_rempty, sf_rempty, Tw, Tr, $time);
-            $finish;
+            $stop;
         end
     end
 
     always @(posedge wclk) begin
         if (bf_wfull != sf_wfull) begin
             $display($time, "bf_wfull = %d, sf_wfull = %d, Tw = %d, Tr = %d, time = %t", bf_wfull, sf_wfull, Tw, Tr, $time);
-            $finish;
+            $stop;
         end
     end
     
@@ -143,7 +143,7 @@ module TB();
                 // == fifo is empty == 
             end
         end
-        $finish;
+        $stop;
     end
 
 endmodule
