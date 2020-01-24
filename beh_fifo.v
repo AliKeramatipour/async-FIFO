@@ -23,7 +23,7 @@ module beh_fifo (rdata, wfull, rempty, wdata, winc, wclk, rinc, rclk, rst);
         else {wrptr3,wrptr2,wrptr1} <= {wrptr2,wrptr1,rptr};
     always @(posedge rclk or posedge rst)
         if (rst) begin 
-            for (i=0; i<MEMDEPTH; i=i+1) ex_mem[i] = 0;
+            //for (i=0; i<MEMDEPTH; i=i+1) ex_mem[i] = 0;
             rptr <= 0;
         end
         else if (rinc && !rempty) rptr <= rptr+1;
