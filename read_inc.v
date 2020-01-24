@@ -20,10 +20,8 @@ module read_inc #(parameter ADDRSIZE = 4)(
             empty <= 1'b1 ;
         end
         else begin
-            if ( signal_read & ~empty ) begin
-                read_counter  <= read_counter + 1;
-                graycode_rptr <= next_gray;
-            end
+            read_counter  <= next_read;
+            graycode_rptr <= next_gray;
             empty <= next_empty;
         end
     end

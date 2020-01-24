@@ -6,11 +6,13 @@ module write_inc #(parameter ADDRSIZE = 4)(
                 input signal_write, wclk, rst);
     
     reg  [ADDRSIZE:0] write_counter;
-    wire [ADDRSIZE:0] next_gray;
+    wire [ADDRSIZE:0] next_gray, next_write;
     
     assign write_address = write_counter[ADDRSIZE-1:0];
-    graycode_gen inst_graycode_gen(write_counter + 1 , next_gray);
-    assign next_full = ( {~graycode_wptr[ADDRSIZE:ADDRSIZE-1], graycode_wptr[ADDRSIZE-2:0]} == next_gray);
+    assign next_write = write_counter + (signal_write & ~full);
+    graycode_gen #(ADDRSIZE) inst_graycode_gen(next_write , next_gray);
+    
+    assign next_full = ( {graycode_rptr[ADDRSIZE:ADDRSIZE-1], graycode_rptr[ADDRSIZE-2:0]} == next_gray);
 
     always @(posedge wclk or posedge rst) begin
         if (rst) begin
@@ -18,10 +20,8 @@ module write_inc #(parameter ADDRSIZE = 4)(
             full <= 1'b0 ;
         end
         else begin
-            if ( signal_write & ~full ) begin
-                write_counter  <= write_counter + 1;
-                graycode_wptr <= next_gray;
-            end
+            write_counter  <= next_write;
+            graycode_wptr <= next_gray;
             full <= next_full;
         end
     end
