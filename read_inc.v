@@ -6,10 +6,12 @@ module read_inc #(parameter ADDRSIZE = 4)(
                 input signal_read, rclk, rst);
     
     reg  [ADDRSIZE:0] read_counter;
-    wire [ADDRSIZE:0] next_gray;
+    wire [ADDRSIZE:0] next_gray, next_read;
     
     assign read_address = read_counter[ADDRSIZE-1:0];
-    graycode_gen inst_graycode_gen(read_counter + 1 , next_gray);
+    assign next_read = read_counter + (signal_read & ~empty) ;
+    graycode_gen #(ADDRSIZE) inst_graycode_gen(next_read , next_gray);
+    
     assign next_empty = (graycode_wptr == next_gray);
 
     always @(posedge rclk or posedge rst) begin
