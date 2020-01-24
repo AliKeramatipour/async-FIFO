@@ -9,7 +9,11 @@
 `define READ rinc = 1;\
     #(2*Tr) \
     rinc = 0;
-
+    
+`define mem_info for (ii=0; ii<8; ii=ii+1) begin \
+  $display("%d   |   %d\n", bf.ex_mem[ii], sf._fifomem.mem[ii]); end\
+  $display("\n\n r_ptr = %d | %d\n", bf.rptr, sf._fifomem.raddr);\
+  $display("w_ptr = %d | %d\n", bf.wptr, sf._fifomem.waddr);
 
 module TB();
     reg [10:0] Tw, Tr;
@@ -17,7 +21,7 @@ module TB();
     wire bf_wfull, sf_wfull, bf_rempty, sf_rempty;
     reg [7:0] w_data;
     reg winc, wclk, rinc, rclk, rst;
-
+    integer ii;
 
 
     beh_fifo bf(bf_rdata, bf_wfull, bf_rempty, w_data, winc, wclk, rinc, rclk, rst);
@@ -29,18 +33,21 @@ module TB();
 
     always @(posedge rclk) begin
         if (bf_rdata != sf_rdata) begin
-            $display($time, "\nbf_rdata = %d, sf_rdata = %d, Tw = %d, Tr = %d, time = %t\n", bf_rdata, sf_rdata, Tw, Tr, $time);
+            $display("bf_rdata = %d, sf_rdata = %d, Tw = %d, Tr = %d, time = %t\n", bf_rdata, sf_rdata, Tw, Tr, $time);
+            `mem_info
             $stop;
         end
         if (bf_rempty != sf_rempty) begin
-            $display($time, "bf_rempty = %d, sf_rempty = %d, Tw = %d, Tr = %d, time = %t", bf_rempty, sf_rempty, Tw, Tr, $time);
+            $display("bf_rempty = %d, sf_rempty = %d, Tw = %d, Tr = %d, time = %t", bf_rempty, sf_rempty, Tw, Tr, $time);
+            `mem_info
             $stop;
         end
     end
 
     always @(posedge wclk) begin
         if (bf_wfull != sf_wfull) begin
-            $display($time, "bf_wfull = %d, sf_wfull = %d, Tw = %d, Tr = %d, time = %t", bf_wfull, sf_wfull, Tw, Tr, $time);
+            $display("bf_wfull = %d, sf_wfull = %d, Tw = %d, Tr = %d, time = %t", bf_wfull, sf_wfull, Tw, Tr, $time);
+            `mem_info
             $stop;
         end
     end
