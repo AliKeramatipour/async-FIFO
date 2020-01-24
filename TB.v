@@ -22,6 +22,7 @@ module TB();
     reg [7:0] w_data;
     reg winc, wclk, rinc, rclk, rst;
     integer ii;
+    parameter SHOW_STAGES = 1;
 
 
     beh_fifo bf(bf_rdata, bf_wfull, bf_rempty, w_data, winc, wclk, rinc, rclk, rst);
@@ -65,7 +66,7 @@ module TB();
                 #20
                 rst = 0;
                 #20 
-
+                if (SHOW_STAGES) $display("RESET\n");
                 // read when empty
                 `READ
                 // write first data
@@ -85,7 +86,7 @@ module TB();
                     // read data
                     `READ
                 end
-
+                if (SHOW_STAGES) $display("RW Normal\n");
                 for (k=0; k<9; k=k+1) begin // 2 X read and 2 X write when normal 
                     // write data
                     `WRITE(k + 204)
@@ -94,16 +95,18 @@ module TB();
                     `READ
                     `READ
                 end
+                if (SHOW_STAGES) $display("2R2W Normal\n");
 
                 for (k=0; k<2; k=k+1) `READ
                 // == fifo is empty == 
-
+                if (SHOW_STAGES) $display("R Normal\n");
                 for (k=0; k<9; k=k+1) begin // read and write when empty 
                     // write data
                     `WRITE(k + 15)
                     // read data
                     `READ
                 end
+                if (SHOW_STAGES) $display("RW Empty\n");
                 for (k=0; k<9; k=k+1) begin // 2 X read and 2 X write when empty 
                     // write data
                     `WRITE(k + 215)
@@ -112,15 +115,16 @@ module TB();
                     `READ
                     `READ
                 end
-
+                if (SHOW_STAGES) $display("2R2W Empty\n");
                 // == fifo is empty == 
-                for (k=0; k<9; k=k+1) begin // 2 X write and read  
+                for (k=0; k<9; k=k+1) begin // 2 X write and read when empty
                     // read data
                     `READ
                     // write data
                     `WRITE(k + 24)
                     `WRITE(k + 124)
                 end
+                if (SHOW_STAGES) $display("R2W Empty\n");
                 // == fifo is full == 
 
                 for (k=0; k<9; k=k+1) begin // read and write when full 
@@ -129,6 +133,7 @@ module TB();
                     // write data
                     `WRITE(k + 33)
                 end
+                if (SHOW_STAGES) $display("RW Full\n");
 
                 for (k=0; k<9; k=k+1) begin // 2 X read and 2 X write when full 
                     // read data
@@ -138,6 +143,7 @@ module TB();
                     `WRITE(k + 233)
                     `WRITE(k + 133)
                 end
+                if (SHOW_STAGES) $display("2W2R Full\n");
                 // == fifo is full == 
 
                 for (k=0; k<9; k=k+1) begin // 2 X read and write when full 
@@ -147,6 +153,7 @@ module TB();
                     `READ
                     `READ
                 end
+                if (SHOW_STAGES) $display("R2W Full\n");
                 // == fifo is empty == 
             end
         end
