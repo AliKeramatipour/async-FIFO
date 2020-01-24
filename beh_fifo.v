@@ -12,22 +12,22 @@ module beh_fifo (rdata, wfull, rempty, wdata, winc, wclk, rinc, rclk, rst);
     parameter MEMDEPTH = 1<<ASIZE;
     reg [DSIZE-1:0] ex_mem [0:MEMDEPTH-1];
     integer i;
-    always @(posedge wclk or negedge rst)
+    always @(posedge wclk or posedge rst)
         if (rst) wptr <= 0;
         else if (winc && !wfull) begin
             ex_mem[wptr[ASIZE-1:0]] <= wdata;
             wptr <= wptr+1;
         end
-    always @(posedge wclk or negedge rst)
+    always @(posedge wclk or posedge rst)
         if (rst) {wrptr3,wrptr2,wrptr1} <= 0;
         else {wrptr3,wrptr2,wrptr1} <= {wrptr2,wrptr1,rptr};
-    always @(posedge rclk or negedge rst)
+    always @(posedge rclk or posedge rst)
         if (rst) begin 
-            for (i=0; i<MEMDEPTH; i=i+1) ex_mem[i] = 0;
+            //for (i=0; i<MEMDEPTH; i=i+1) ex_mem[i] = 0;
             rptr <= 0;
         end
         else if (rinc && !rempty) rptr <= rptr+1;
-    always @(posedge rclk or negedge rst)
+    always @(posedge rclk or posedge rst)
         if (rst) {rwptr3,rwptr2,rwptr1} <= 0;
         else {rwptr3,rwptr2,rwptr1} <= {rwptr2,rwptr1,wptr};
     assign rdata = ex_mem[rptr[ASIZE-1:0]];
