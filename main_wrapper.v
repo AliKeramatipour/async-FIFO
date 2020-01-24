@@ -1,5 +1,5 @@
 module fifo #(parameter WORDSIZE = 8,
-            parameter ADDRSIZE = 8)
+            parameter ADDRSIZE = 3)
             (
                 input[WORDSIZE-1:0] write_data,
                 input               signal_read, rclk,
