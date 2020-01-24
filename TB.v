@@ -18,20 +18,31 @@ module TB();
     reg [7:0] w_data;
     reg winc, wclk, rinc, rclk, rst;
 
+
+
     beh_fifo bf(bf_rdata, bf_wfull, bf_rempty, w_data, winc, wclk, rinc, rclk, rst);
-    main_wrapper sf(sf_rdata, sf_wfull, sf_rempty, w_data, winc, wclk,  rinc, rclk, rst);
+    fifo sf(.read_data(sf_rdata), .full(sf_wfull), .empty(sf_rempty), .write_data(w_data), .signal_write(winc), .wclk(wclk),  .signal_read(rinc), .rclk(rclk), .rst(rst));
 
     always #Tr rclk = ~rclk; 
     always #Tw wclk = ~wclk; 
 
 
     always @(posedge rclk) begin
-        assert (bf_rdata == sf_rdata);
-        assert (bf_rempty == sf_rempty);
+        if (bf_rdata != sf_rdata) begin
+            $display($time, "bf_rdata = %d, sf_rdata = %d, Tw = %d, Tr = %d, time = %t", bf_rdata, sf_rdata, Tw, Tr, $time);
+            $finish;
+        end
+        if (bf_rempty != sf_rempty) begin
+            $display($time, "bf_rempty = %d, sf_rempty = %d, Tw = %d, Tr = %d, time = %t", bf_rempty, sf_rempty, Tw, Tr, $time);
+            $finish;
+        end
     end
 
     always @(posedge wclk) begin
-        assert (bf_wfull == sf_wfull);
+        if (bf_wfull != sf_wfull) begin
+            $display($time, "bf_wfull = %d, sf_wfull = %d, Tw = %d, Tr = %d, time = %t", bf_wfull, sf_wfull, Tw, Tr, $time);
+            $finish;
+        end
     end
     
     integer i, j, k;
