@@ -33,12 +33,12 @@ module TB();
 
 
     always @(posedge rclk) begin
-        if (bf_rdata != sf_rdata) begin
+        if (bf_rdata !== sf_rdata) begin
             $display("bf_rdata = %d, sf_rdata = %d, Tw = %d, Tr = %d, time = %t\n", bf_rdata, sf_rdata, Tw, Tr, $time);
             `mem_info
             $stop;
         end
-        if (bf_rempty != sf_rempty) begin
+        if (bf_rempty !== sf_rempty) begin
             $display("bf_rempty = %d, sf_rempty = %d, Tw = %d, Tr = %d, time = %t", bf_rempty, sf_rempty, Tw, Tr, $time);
             `mem_info
             $stop;
@@ -46,7 +46,7 @@ module TB();
     end
 
     always @(posedge wclk) begin
-        if (bf_wfull != sf_wfull) begin
+        if (bf_wfull !== sf_wfull) begin
             $display("bf_wfull = %d, sf_wfull = %d, Tw = %d, Tr = %d, time = %t", bf_wfull, sf_wfull, Tw, Tr, $time);
             `mem_info
             $stop;
@@ -155,6 +155,7 @@ module TB();
                 end
                 if (SHOW_STAGES) $display("R2W Full\n");
                 // == fifo is empty == 
+                `mem_info
             end
         end
         $stop;
