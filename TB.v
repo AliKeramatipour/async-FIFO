@@ -63,11 +63,14 @@ module TB();
             for (j =1; j<11; j = j+1) begin
                 Tw = j;
                 rst = 1;
+                winc = 0;
+                rinc = 0;
                 #20
                 rst = 0;
                 #20 
                 if (SHOW_STAGES) $display("RESET\n");
                 // read when empty
+                #(Tr)
                 `READ
                 // write first data
                 `WRITE(1)
