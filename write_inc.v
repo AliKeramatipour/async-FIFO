@@ -12,7 +12,7 @@ module write_inc #(parameter ADDRSIZE = 4)(
     assign next_write = write_counter + (signal_write & ~full);
     graycode_gen #(ADDRSIZE) inst_graycode_gen(next_write , next_gray);
     
-    assign next_full = ( {graycode_rptr[ADDRSIZE:ADDRSIZE-1], graycode_rptr[ADDRSIZE-2:0]} == next_gray);
+    assign next_full = ( {~graycode_rptr[ADDRSIZE:ADDRSIZE-1], graycode_rptr[ADDRSIZE-2:0]} == next_gray);
 
     always @(posedge wclk or posedge rst) begin
         if (rst) begin
